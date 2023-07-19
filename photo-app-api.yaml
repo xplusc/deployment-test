@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photo-app-api
+  labels:
+    app: photo-app-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photo-app-api
+  template:
+    metadata:
+      labels:
+        app: photo-app-api
+    spec:
+      containers:
+      - name: photo-app-api
+        image: photo-app-api
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        - name: MONGO_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-configmap
+              key: database_url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: photo-app-api-service
+spec:
+  selector:
+    app: photo-app-api
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30001
