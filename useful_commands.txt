@@ -1,0 +1,2 @@
+eval $(minikube docker-env)
+kubectl exec -it <container_name> -- /bin/bash
